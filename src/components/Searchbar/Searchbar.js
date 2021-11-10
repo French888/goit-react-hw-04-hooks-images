@@ -1,43 +1,50 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import s from "./Searchbar.module.css";
+import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
 function Searchbar({ onSubmit }) {
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value.toLowerCase());
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim() === "") {
+      return toast.error("Enter your query!");
+    }
     onSubmit(query);
     setQuery("");
   };
 
-  const handleChange = (event) => {
-    setQuery(event.currentTarget.value.toLowerCase());
-  };
-
   return (
-    <header className="Searchbar">
-      <form className="SearchForm" onSubmit={handleSubmit}>
-        <button type="submit" className="SearchForm-button">
-          <span className="SearchForm-button-label">Search</span>
-        </button>
+    <div>
+      <header className={s.Searchbar}>
+        <form className={s.SearchForm} onSubmit={handleSubmit}>
+          <button type="submit" className={s.SearchFormButton}>
+            <span className={s.SearchFormButtonLabel}>Search</span>
+          </button>
 
-        <input
-          className="SearchForm-input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-          value={query}
-          onChange={handleChange}
-        />
-      </form>
-    </header>
+          <input
+            name="query"
+            value={query}
+            onChange={handleQueryChange}
+            className={s.SearchFormInput}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+          />
+        </form>
+      </header>
+    </div>
   );
 }
 
 Searchbar.propTypes = {
-  query: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 export default Searchbar;
